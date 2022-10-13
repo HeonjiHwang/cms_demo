@@ -1,6 +1,6 @@
 const initialState = {
-    keyInfo : {},
-    userInfo : {}
+    keyInfo : null,
+    userInfo : null
 }
 
 const KEYINFO = 'BOFFICE/KEYINFO';

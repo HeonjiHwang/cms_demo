@@ -28,7 +28,7 @@ const SignIn = () => {
             user_password.focus();
             return;
         }
-
+        console.log(keyInfo)
         if(keyInfo){
             let sec_pwd = Encrypt(user_password, keyInfo);
             let data = {password : sec_pwd, user_id : user_id};
