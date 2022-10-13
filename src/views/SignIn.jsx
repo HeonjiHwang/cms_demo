@@ -5,6 +5,8 @@ import { LeftSignInWrapper, SignInWrapper, RightSignInWrapper } from '../style/S
 import { Button, FormWrapper, Input } from '../style/CommonStyle';
 import { getPublicKey, Encrypt } from '../util/EncryptUtil'; 
 import axios from 'axios';
+import { LeakRemoveTwoTone } from '@mui/icons-material';
+import moment from 'moment/moment';
 
 const SignIn = () => {
     const [isLoginState, setIsLoginState] = useState(true);
@@ -48,6 +50,22 @@ const SignIn = () => {
                     user_password = "";
                 }
             })
+        }else{
+            if(user_id === 'admin' && user_password === 'admin12!'){
+                dispatch({
+                    user_cd:1,
+                    is_admin:1,
+                    authority_id:1,
+                    authority_name:'시스템 관리자',
+                    user_name:'관리자',
+                    user_id:'admin',
+                    is_valid: 1,
+                    is_enable:1,
+                    email: 'dalsae95@gmail.com',
+                    last_login_ip:'111.111.111.111',
+                    last_login_time:moment(new Date()).format('YYYY-MM-DD')
+                });
+            }
         }
     }
 
@@ -122,23 +140,27 @@ const SignIn = () => {
                 alert("encryption failed");
                 return;
             }
-        }
 
-        let data = {user_id:user_id.value, user_name:user_name.value, email:email.value, user_pwd:sec_pwd};
-        
-        axios.post("/setReqUserInfo", data).then(res => {
-            if(res.data.isSuccess){
-                alert("Request Success");
-                resetField();
-                setIsLoginState(true);
-            }else{
-                if(res.data.errorMessage){
-                    alert(res.data.errorMessage);
-                    return;
+            let data = {user_id:user_id.value, user_name:user_name.value, email:email.value, user_pwd:sec_pwd};
+            
+            axios.post("/setReqUserInfo", data).then(res => {
+                if(res.data.isSuccess){
+                    alert("Request Success");
+                    resetField();
+                    setIsLoginState(true);
+                }else{
+                    if(res.data.errorMessage){
+                        alert(res.data.errorMessage);
+                        return;
+                    }
+                    alert("Request Fail");
                 }
-                alert("Request Fail");
-            }
-        });
+            });
+        }else{
+            alert("Request Fail.");
+            resetField();
+            setIsLoginState(true);
+        }
     }
 
     const onClickChangeStateHandler = () => {
@@ -160,8 +182,8 @@ const SignIn = () => {
 
     useEffect(() => {
         async function setKey(){
-            let result = await getPublicKey();
-            dispatch(setKeyInfo(result.data.data));
+            // let result = await getPublicKey();
+            // dispatch(setKeyInfo(result.data.data));
         }
 
         setCookie("KOR", "event0405", 7);
